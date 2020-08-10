@@ -14,7 +14,7 @@ endpoint = None
 track_number = 0
 chosen_track = None
 playlist_track = None
-
+game_over=None
 
 class SpotifyAPI(object):
     access_token = None
@@ -77,9 +77,9 @@ client_secret = '75c2dea67e0c49618e4f9649de2628a0'
 spotify = SpotifyAPI(client_id, client_secret)
 
 
-# object to bring up the response from the api
+
 def index(request):
-    global choice, endpoint, spotify, track_number, chosen_track, playlist_track
+    global choice, endpoint, spotify, track_number, chosen_track, playlist_track,game_over
     choices_urls = {
         "pop": "https://api.spotify.com/v1/playlists/37i9dQZF1DXcBWIGoYBM5M/tracks",
         "hip-hop": "https://api.spotify.com/v1/playlists/37i9dQZF1DX5qgrUJCOKNp/tracks",
@@ -103,7 +103,7 @@ def index(request):
     headers = {
         "Authorization": f"Bearer {access_token}"
     }
-# to filter the choice chosen by the user
+
     submit_value = request.POST.get("submit", None)
     if submit_value is not None:
         endpoint = choices_urls[request.POST["choices"]]
@@ -117,7 +117,7 @@ def index(request):
     sampling_list = list(range(len(playlist_track)))
     del sampling_list[track_number]
     random_numbers = random.sample(sampling_list, 3)
-# response from the api
+
 
     preview_url = playlist_track[track_number]['track']['preview_url']
 
@@ -137,7 +137,7 @@ def index(request):
         else:
             game_over = {"score": score}
             score=0
-            return redirect('/spotify/page')
+            return redirect('/spotify/page',game_over)
     else:
         return render(request, 'spotify/index.html', data_view)
 
@@ -152,7 +152,7 @@ def gameOver(request):
 
 
 def data(request):
-    global score, chosen_track, track_number, playlist_track
+    global score, chosen_track, track_number, playlist_track,game_over
     return_val = None
     if request.POST["submit"] == "submit-one":
         if request.POST["anwser"] == chosen_track:
@@ -162,8 +162,8 @@ def data(request):
                 return_val = redirect('/spotify')
             else:
                 game_over = {"score": score}
+                return_val = redirect('/spotify/page',game_over)
                 score=0
-                return_val = redirect('/spotify/page')
         else:
             game_over = {"score": score}
             return_val = render(request, 'spotify/gameover.html', game_over)
@@ -171,4 +171,4 @@ def data(request):
     chosen_track = None
     return return_val
 def page(request):
-    return render(request,'spotify/page.html')
+    return render(request,'spotify/page.html',game_over)

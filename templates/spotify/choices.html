@@ -27,8 +27,7 @@
     <div class="d-flex justify-content-center">
     <form method="POST" action="/spotify/">
         {% csrf_token %}
-    <select name="choices" class="browser-default custom-select">
-        <option>Open this select menu</option>
+    <select name="choices" class="browser-default custom-select" important> 
         <option value="pop">pop</option>
         <option value="hip-hop">hip hop</option>
         <option value="kpop">kpop</option>
