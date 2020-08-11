@@ -79,7 +79,7 @@ spotify = SpotifyAPI(client_id, client_secret)
 
 
 def index(request):
-    global choice, endpoint, spotify, track_number, chosen_track, playlist_track,game_over
+    global choice, endpoint, spotify, track_number, chosen_track, playlist_track,game_over,score
     choices_urls = {
         "pop": "https://api.spotify.com/v1/playlists/37i9dQZF1DXcBWIGoYBM5M/tracks",
         "hip-hop": "https://api.spotify.com/v1/playlists/37i9dQZF1DX5qgrUJCOKNp/tracks",
