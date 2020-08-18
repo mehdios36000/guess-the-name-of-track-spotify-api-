@@ -72,8 +72,8 @@ class SpotifyAPI(object):
         return True
 
 
-client_id = '698f8e4438fc4093b4d7befcf2edae88'
-client_secret = '75c2dea67e0c49618e4f9649de2628a0'
+client_id = 'client_id'
+client_secret = 'client_secret'
 spotify = SpotifyAPI(client_id, client_secret)
 
 
