@@ -110,7 +110,7 @@ def index(request):
     if submit_value is not None:
         endpoint = choices_urls[request.POST["choices"]]
         data = urlencode({"market": "MA",
-                          'offset': 0,"limit":5})
+                          'offset': 0})
         lookup_url = f"{endpoint}?{data}"
         r = requests.get(lookup_url, headers=headers)
         playlist_track = r.json()['items']
