@@ -79,7 +79,7 @@ spotify = SpotifyAPI(client_id, client_secret)
 
 
 def index(request):
-    global choice, endpoint, spotify, track_number, chosen_track, playlist_track,game_over
+    global choice, endpoint, spotify, track_number, chosen_track, playlist_track,game_over,score
     choices_urls = {
         "pop": "https://api.spotify.com/v1/playlists/37i9dQZF1DXcBWIGoYBM5M/tracks",
         "hip-hop": "https://api.spotify.com/v1/playlists/37i9dQZF1DX5qgrUJCOKNp/tracks",
@@ -92,7 +92,9 @@ def index(request):
         "country": "https://api.spotify.com/v1/playlists/37i9dQZF1DWVpjAJGB70vU/tracks",
         "electronic/dance": "https://api.spotify.com/v1/playlists/37i9dQZF1DXa8NOEUWPn9W/tracks",
         "khaleji": "https://api.spotify.com/v1/playlists/37i9dQZF1DWU486KSiznWZ/tracks",
-        "reggae": "https://api.spotify.com/v1/playlists/37i9dQZF1DXbSbnqxMTGx9/tracks"
+        "reggae": "https://api.spotify.com/v1/playlists/37i9dQZF1DXbSbnqxMTGx9/tracks",
+        "rap_fr": "https://api.spotify.com/v1/playlists/167iCb4j4Yc35hM21RB495/tracks",
+        "tiktok_songs":"https://api.spotify.com/v1/playlists/37i9dQZF1DX2L0iB23Enbq/tracks"
 
     }
 
@@ -108,7 +110,7 @@ def index(request):
     if submit_value is not None:
         endpoint = choices_urls[request.POST["choices"]]
         data = urlencode({"market": "MA",
-                          'offset': 0})
+                          'offset': 0,"limit":5})
         lookup_url = f"{endpoint}?{data}"
         r = requests.get(lookup_url, headers=headers)
         playlist_track = r.json()['items']
@@ -127,16 +129,17 @@ def index(request):
     ]
     choices += [playlist_track[x]['track']['name'] for x in random_numbers]
     random.shuffle(choices)
+    
 
-    data_view = {"preview_url": preview_url, "choices": choices, }
+    data_view = {"preview_url": preview_url, "choices": choices }
     if data_view["preview_url"] == None:
-        print('not found')
         track_number += 1
         if track_number < len(playlist_track):
             return redirect('/spotify')
         else:
             game_over = {"score": score}
             score=0
+            track_number=0
             return redirect('/spotify/page',game_over)
     else:
         return render(request, 'spotify/index.html', data_view)
@@ -162,10 +165,12 @@ def data(request):
                 return_val = redirect('/spotify')
             else:
                 game_over = {"score": score}
+                track_number=0
                 return_val = redirect('/spotify/page',game_over)
                 score=0
         else:
             game_over = {"score": score}
+            track_number=0
             return_val = render(request, 'spotify/gameover.html', game_over)
             score=0
     chosen_track = None
